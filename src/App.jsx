@@ -11,6 +11,8 @@ import Lab3Page from "./components/lab3Page";
 import Lab4Add from "./components/Lab4Add";
 import Lab4Edit from "./components/Lab4Edit";
 import Lab5 from "./pages/lab5";
+import UserDetails from "./pages/UserDetails";
+import PostComments from "./pages/PostComments";
 import { useReducer } from "react";
 
 import AppReducer from "./data/AppReducer";
@@ -52,6 +54,8 @@ function App() {
           <Route path="/lab4/add" element={<Lab4Add />} />
           <Route path="/lab4/edit/:id" element={<Lab4Edit />} />
           <Route path="/lab5" element={<Lab5 />} />
+          <Route path="/lab5/users/:id" element={<UserDetails />} />
+          <Route path="/lab5/posts/:id/comments" element={<PostComments />} />
           <Route path="/" element={<Home />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,56 +1,37 @@
 import useFetch from "../data/useFetch";
-import { useState } from "react";
-import { Dropdown } from "react-bootstrap";
+import { useReducer, useMemo, useEffect } from "react";
+import { Dropdown, Accordion } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import TableDataReducer from "../data/TableDataReducer";
 
 function Lab5() {
   const [posts] = useFetch("https://jsonplaceholder.typicode.com/posts");
   const [users] = useFetch("https://jsonplaceholder.typicode.com/users");
   const [comments] = useFetch("https://jsonplaceholder.typicode.com/comments");
 
-  const [userSort, setUserSort] = useState("natural");
-  const [titleSort, setTitleSort] = useState("natural");
-  const [commentsSort, setCommentsSort] = useState("natural");
+  const tableData = useMemo(() => {
+    if (!posts || !users || !comments) return [];
+    return posts.map((p) => {
+      return {
+        user: users.find((u) => u.id === p.userId),
+        post: p,
+        comments: comments.filter((c) => c.postId === p.id),
+      };
+    });
+  }, [posts, users, comments]);
 
-  const tableData = posts.map((p) => {
-    return {
-      user: users.find((u) => u.id === p.userId),
-      post: p,
-      comments: comments.filter((c) => c.postId === p.id),
-    };
+  const [state, dispatch] = useReducer(TableDataReducer, {
+    originalData: tableData,
+    sortedData: tableData,
   });
 
-  // Funkcja sortowania
-  const sortedData = [...tableData].sort((a, b) => {
-    // Sortowanie po użytkowniku
-    if (userSort === "asc") {
-      const nameA = a.user ? a.user.name : "";
-      const nameB = b.user ? b.user.name : "";
-      return nameA.localeCompare(nameB);
+  useEffect(() => {
+    if (tableData.length > 0) {
+      dispatch({ type: "SET_ORIGINAL_DATA", data: tableData });
     }
-    if (userSort === "desc") {
-      const nameA = a.user ? a.user.name : "";
-      const nameB = b.user ? b.user.name : "";
-      return nameB.localeCompare(nameA);
-    }
+  }, [tableData]);
 
-    // Sortowanie po tytule
-    if (titleSort === "asc") {
-      return a.post.title.localeCompare(b.post.title);
-    }
-    if (titleSort === "desc") {
-      return b.post.title.localeCompare(a.post.title);
-    }
-
-    // Sortowanie po liczbie komentarzy
-    if (commentsSort === "asc") {
-      return a.comments.length - b.comments.length;
-    }
-    if (commentsSort === "desc") {
-      return b.comments.length - a.comments.length;
-    }
-
-    return 0; // naturalna kolejność
-  });
+  const sortedData = state.sortedData;
 
   return (
     <div className="container mt-4">
@@ -67,13 +48,19 @@ function Lab5() {
                   User
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => setUserSort("asc")}>
+                  <Dropdown.Item
+                    onClick={() => dispatch({ type: "SORT_USER_ASC" })}
+                  >
                     Rosnąco
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => setUserSort("desc")}>
+                  <Dropdown.Item
+                    onClick={() => dispatch({ type: "SORT_USER_DESC" })}
+                  >
                     Malejąco
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => setUserSort("natural")}>
+                  <Dropdown.Item
+                    onClick={() => dispatch({ type: "SORT_USER_NATURAL" })}
+                  >
                     Naturalna kolejność
                   </Dropdown.Item>
                 </Dropdown.Menu>
@@ -88,13 +75,19 @@ function Lab5() {
                   Title
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => setTitleSort("asc")}>
+                  <Dropdown.Item
+                    onClick={() => dispatch({ type: "SORT_TITLE_ASC" })}
+                  >
                     Rosnąco
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => setTitleSort("desc")}>
+                  <Dropdown.Item
+                    onClick={() => dispatch({ type: "SORT_TITLE_DESC" })}
+                  >
                     Malejąco
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => setTitleSort("natural")}>
+                  <Dropdown.Item
+                    onClick={() => dispatch({ type: "SORT_TITLE_NATURAL" })}
+                  >
                     Naturalna kolejność
                   </Dropdown.Item>
                 </Dropdown.Menu>
@@ -109,13 +102,19 @@ function Lab5() {
                   Comments Count
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => setCommentsSort("asc")}>
+                  <Dropdown.Item
+                    onClick={() => dispatch({ type: "SORT_COMMENTS_ASC" })}
+                  >
                     Rosnąco
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => setCommentsSort("desc")}>
+                  <Dropdown.Item
+                    onClick={() => dispatch({ type: "SORT_COMMENTS_DESC" })}
+                  >
                     Malejąco
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => setCommentsSort("natural")}>
+                  <Dropdown.Item
+                    onClick={() => dispatch({ type: "SORT_COMMENTS_NATURAL" })}
+                  >
                     Naturalna kolejność
                   </Dropdown.Item>
                 </Dropdown.Menu>
@@ -126,9 +125,31 @@ function Lab5() {
         <tbody>
           {sortedData.map(({ user, post, comments }, index) => (
             <tr key={index}>
-              <td>{user ? user.name : "Unknown"}</td>
-              <td>{post.title}</td>
-              <td>{comments.length}</td>
+              <td>
+                {user ? (
+                  <Link to={`/lab5/users/${user.id}`} className="text-primary">
+                    {user.name}
+                  </Link>
+                ) : (
+                  "Unknown"
+                )}
+              </td>
+              <td>
+                <Accordion>
+                  <Accordion.Item eventKey={`post-${post.id}`}>
+                    <Accordion.Header>{post.title}</Accordion.Header>
+                    <Accordion.Body>{post.body}</Accordion.Body>
+                  </Accordion.Item>
+                </Accordion>
+              </td>
+              <td>
+                <Link
+                  to={`/lab5/posts/${post.id}/comments`}
+                  className="btn btn-link p-0 text-primary"
+                >
+                  {comments.length}
+                </Link>
+              </td>
             </tr>
           ))}
         </tbody>

@@ -1,37 +1,37 @@
 export const people = [
     {
         "id": 1,
-        "name": "Karol",
-        "birthDate": "1989-09-20",
-        "email": "karol@wsei.edu.pl",
-        "phone": "234-505-725"
+        "name": "Zuzanna",
+        "birthDate": "2001-08-18",
+        "email": "zuzanna@wsei.edu.pl",
+        "phone": "234-742-932"
     },
     {
         "id": 2,
-        "name": "Magdalena",
-        "birthDate": "1989-03-28",
-        "email": "magdalena@wsei.edu.pl",
-        "phone": "234-467-795"
+        "name": "Andrzej",
+        "birthDate": "1988-11-12",
+        "email": "andrzej@wsei.edu.pl",
+        "phone": "234-511-709"
     },
     {
         "id": 3,
-        "name": "Michał",
-        "birthDate": "1977-01-04",
-        "email": "michał@wsei.edu.pl",
-        "phone": "234-973-271"
+        "name": "Andrzej",
+        "birthDate": "1991-03-07",
+        "email": "andrzej@wsei.edu.pl",
+        "phone": "234-876-894"
     },
     {
         "id": 4,
-        "name": "Monika",
-        "birthDate": "2004-11-05",
-        "email": "monika@wsei.edu.pl",
-        "phone": "234-593-828"
+        "name": "Krzysztof",
+        "birthDate": "1987-06-23",
+        "email": "krzysztof@wsei.edu.pl",
+        "phone": "234-491-511"
     },
     {
         "id": 5,
-        "name": "Tomasz",
-        "birthDate": "1987-03-12",
-        "email": "tomasz@wsei.edu.pl",
-        "phone": "234-698-779"
+        "name": "Natalia",
+        "birthDate": "1982-01-07",
+        "email": "natalia@wsei.edu.pl",
+        "phone": "234-111-660"
     }
 ];
